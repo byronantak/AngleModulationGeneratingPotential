@@ -11,6 +11,7 @@ namespace HonoursGeneratingFunction.GeneratingFunction
     public static class ResultInterpreter
     {
         public const string HAMMING_FREQUENCIES_FILE_PATH = "hammingFrequencies.json";
+        public const string POSITIONAL_FREQUENCIES_FILE_PATH = "positionalFrequencies.json";
         public const string RUNS_FILE_PATH = "runs.json";
         public const string FREQUENCY_FILE_PATH = "frequencies.json";
         public const string REFERENCE_HAMMING_STRING = "0000000000000000";
@@ -23,9 +24,22 @@ namespace HonoursGeneratingFunction.GeneratingFunction
             var bitStringLookup = JsonSerializer.Deserialize<Dictionary<string, double>>(jsonContent);
             HammingFrequencyAnalysis(bitStringLookup, bitStringLength, savePath);
             LongestRunAnalysis(bitStringLookup, bitStringLength, savePath);
-            ConditionalProbabilityAnalyzer.PerformConditionalProbabilityAnalysis(bitStringLookup, savePath);
-            ConditionalProbabilitySummarizer.SummarizeProbabilities(bitStringLookup, savePath);
+            //ConditionalProbabilityAnalyzer.PerformConditionalProbabilityAnalysis(bitStringLookup, savePath);
+            //ConditionalProbabilitySummarizer.SummarizeProbabilities(bitStringLookup, savePath);
+            PositionalFrequencyOfOnesToFile(bitStringLookup, savePath);
             StandardAnalysis(bitStringLookup, savePath);
+        }
+
+        private static void PositionalFrequencyOfOnesToFile(Dictionary<string, double> bitStringLookup, string savePath)
+        {
+            var positionalFrequenciesList = PositionalFrequencyAnalyzer.CalculateFrequencyOfOneForEachPosition(bitStringLookup);
+            var positionalFrequencies = positionalFrequenciesList.Select((x, index) => new PositionalFrequency
+            {
+                Position = index,
+                FrequencyOnes = x
+            });
+            var jsonString = JsonSerializer.Serialize(positionalFrequencies);
+            File.WriteAllText(Path.Join(savePath, POSITIONAL_FREQUENCIES_FILE_PATH), jsonString);
         }
 
         private static List<ConditionalProbabilityStat> CalculateOverallConditionalProbability(Dictionary<string, double> bitStringLookup, int bitStringLength, double totalStrings)

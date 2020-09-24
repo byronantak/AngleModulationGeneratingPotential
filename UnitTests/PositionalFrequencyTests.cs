@@ -17,7 +17,7 @@ namespace UnitTests
                 { "10", 5 },
                 { "11", 5 },
             };
-            var positionsFrequencies = PositionalFrequency.CalculateFrequencyOfOneForEachPosition(myBitStringDictionary);
+            var positionsFrequencies = PositionalFrequencyAnalyzer.CalculateFrequencyOfOneForEachPosition(myBitStringDictionary);
             Assert.NotNull(positionsFrequencies);
             Assert.NotEmpty(positionsFrequencies);
             Assert.Equal(0.5, positionsFrequencies.ElementAt(0));
@@ -34,7 +34,7 @@ namespace UnitTests
                 { "10", 0 },
                 { "11", 0 },
             };
-            var positionsFrequencies = PositionalFrequency.CalculateFrequencyOfOneForEachPosition(myBitStringDictionary);
+            var positionsFrequencies = PositionalFrequencyAnalyzer.CalculateFrequencyOfOneForEachPosition(myBitStringDictionary);
             Assert.NotNull(positionsFrequencies);
             Assert.NotEmpty(positionsFrequencies);
             Assert.Equal(double.NaN, positionsFrequencies.ElementAt(0));
@@ -54,7 +54,7 @@ namespace UnitTests
                 { "10", count3 },
                 { "11", count4 },
             };
-            var positionsFrequencies = PositionalFrequency.CalculateFrequencyOfOneForEachPosition(myBitStringDictionary);
+            var positionsFrequencies = PositionalFrequencyAnalyzer.CalculateFrequencyOfOneForEachPosition(myBitStringDictionary);
             Assert.NotNull(positionsFrequencies);
             Assert.NotEmpty(positionsFrequencies);
             Assert.Equal(expectedFreq1, positionsFrequencies.ElementAt(0));

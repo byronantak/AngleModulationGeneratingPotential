@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace HonoursGeneratingFunction.GeneratingFunction.Analysis
 {
-    public static class PositionalFrequency
+    public static class PositionalFrequencyAnalyzer
     {
         public static IEnumerable<double> CalculateFrequencyOfOneForEachPosition(Dictionary<string, double> bitStringLookup)
         {
