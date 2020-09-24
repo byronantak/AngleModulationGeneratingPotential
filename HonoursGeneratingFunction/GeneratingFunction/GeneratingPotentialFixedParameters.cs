@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace HonoursGeneratingFunction.GeneratingFunction
 {
-    public static class GeneratingPotential
+    public static class GeneratingPotentialFixedParameters
     {
         public const string RESULTS_FOLDER_NAME = "Results";
         public const string COUNTS_FILE_NAME = "counts.json";
@@ -15,45 +15,68 @@ namespace HonoursGeneratingFunction.GeneratingFunction
         private const double PARAMETER_VALUE_STEP_SIZE = 0.025;
         private const double SAMPLE_STEP_SIZE = 1;
         private const double SAMPLE_START = 1;
-        private const bool INCLUDE_D = false;
-        private const double FIXED_D_VALUE = 0;
 
         // assumes constant arbitrary samples
-        public static void ReplicateExperiment(int bitStringSize, string pathToCreateResults)
+        public static void ReplicateExperiment(int bitStringSize, string pathToCreateResults, double? dValue, double? cValue, double? bValue, double? aValue)
         {
             var savePath = CreateResultsFolder(pathToCreateResults);
             var resultingFilePath = Path.Join(savePath, COUNTS_FILE_NAME);
             var counter = 0;
-            var parameterValues = GenerateValuesInRange(PARAMETER_VALUE_START, PARAMETER_VALUE_END + PARAMETER_VALUE_STEP_SIZE, PARAMETER_VALUE_STEP_SIZE).ToList();
+
+            var aParameterValues = new List<double>();
+            if (aValue.HasValue)
+            {
+                aParameterValues.Add(aValue.Value);
+            }
+            else
+            {
+                aParameterValues = GenerateValuesInRange(PARAMETER_VALUE_START, PARAMETER_VALUE_END + PARAMETER_VALUE_STEP_SIZE, PARAMETER_VALUE_STEP_SIZE).ToList();
+            }
+
+            var bParameterValues = new List<double>();
+            if (bValue.HasValue)
+            {
+                bParameterValues.Add(bValue.Value);
+            }
+            else
+            {
+                bParameterValues = GenerateValuesInRange(PARAMETER_VALUE_START, PARAMETER_VALUE_END + PARAMETER_VALUE_STEP_SIZE, PARAMETER_VALUE_STEP_SIZE).ToList();
+            }
+
+            var cParameterValues = new List<double>();
+            if (cValue.HasValue)
+            {
+                cParameterValues.Add(cValue.Value);
+            }
+            else
+            {
+                cParameterValues = GenerateValuesInRange(PARAMETER_VALUE_START, PARAMETER_VALUE_END + PARAMETER_VALUE_STEP_SIZE, PARAMETER_VALUE_STEP_SIZE).ToList();
+            }
+
+            var dParameterValues = new List<double>();
+            if (dValue.HasValue)
+            {
+                dParameterValues.Add(dValue.Value);
+            }
+            else
+            {
+                dParameterValues = GenerateValuesInRange(PARAMETER_VALUE_START, PARAMETER_VALUE_END + PARAMETER_VALUE_STEP_SIZE, PARAMETER_VALUE_STEP_SIZE).ToList();
+            }
+
             var samples = CreateSamples(SAMPLE_START, SAMPLE_STEP_SIZE, bitStringSize);
             var bitStringCountingDictionary = BitStringDictionaryProvider.CreateBitStringDictionary(bitStringSize, 0);
 
-            var totalIterations = Math.Pow(parameterValues.Count, 3);
-            if (INCLUDE_D)
-            {
-                totalIterations = Math.Pow(parameterValues.Count, 4);
-            }
+            var totalIterations = aParameterValues.Count * bParameterValues.Count * cParameterValues.Count * dParameterValues.Count;
 
-            foreach (var a in parameterValues)
+            foreach (var a in aParameterValues)
             {
-                foreach (var b in parameterValues)
+                foreach (var b in bParameterValues)
                 {
-                    foreach (var c in parameterValues)
+                    foreach (var c in cParameterValues)
                     {
-                        if (INCLUDE_D)
+                        foreach (var d in dParameterValues)
                         {
-                            foreach (var d in parameterValues)
-                            {
-                                counter = GenerateBitStringIter(counter, samples, bitStringCountingDictionary, a, b, c, d);
-                                if (counter % 10000 == 0)
-                                {
-                                    Console.WriteLine($"Iteration {counter}/{totalIterations} {counter / totalIterations * 100}%");
-                                }
-                            }
-                        }
-                        else
-                        {
-                            counter = GenerateBitStringIter(counter, samples, bitStringCountingDictionary, a, b, c, FIXED_D_VALUE);
+                            counter = GenerateBitStringIter(counter, samples, bitStringCountingDictionary, a, b, c, d);
                             if (counter % 10000 == 0)
                             {
                                 Console.WriteLine($"Iteration {counter}/{totalIterations} {counter / totalIterations * 100}%");

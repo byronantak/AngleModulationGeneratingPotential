@@ -18,7 +18,7 @@ namespace HonoursGeneratingFunction
                 ResultFilePath = configBuilder.GetSection("ResultFilePath").Value
             };
 
-            GeneratingPotential.ReplicateExperiment(config.BitStringLength, config.ResultFilePath);
+            GeneratingPotentialFixedParameters.ReplicateExperiment(config.BitStringLength, config.ResultFilePath, null, null, null, null);
             ResultInterpreter.Interpret(config.BitStringLength, config.ResultFilePath);
         }
     }
