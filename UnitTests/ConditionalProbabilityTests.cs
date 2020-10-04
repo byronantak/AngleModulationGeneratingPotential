@@ -66,6 +66,72 @@ namespace TestProject
             Assert.Equal(expectedProb, stat.ConditionalProbDictionary["NextBit=0"]);
         }
 
+        [Fact]
+        public void When_CalculateConditionalProbsWithShortString_WithPatternInCountsAndSomeZeroes_ExpectCorrectProbabilities()
+        {
+            var myBitStringDictionary = new Dictionary<string, double>
+            {
+                { "000", 0 },
+                { "001", 7 },
+                { "010", 0 },
+                { "011", 5 },
+                { "100", 0 },
+                { "101", 7 },
+                { "110", 0 },
+                { "111", 5 },
+            };
+            var stat = ConditionalProbabilityAnalyzer.CalculateConditionalProbabilityForString("0", myBitStringDictionary);
+            Assert.NotNull(stat);
+            Assert.Equal(2, stat.ConditionalProbDictionary.Values.Count);
+            Assert.Equal((7d) / (7d + 5) , stat.ConditionalProbDictionary["NextBit=0"]);
+            Assert.Equal((5d) / (7d + 5) , stat.ConditionalProbDictionary["NextBit=1"]);
+            Assert.Equal(1, stat.ConditionalProbDictionary["NextBit=0"] + stat.ConditionalProbDictionary["NextBit=1"], 2);
+        }
+
+        [Fact]
+        public void When_CalculateConditionalProbsWithShortString_WithSkewedCountAndSomeZeroes_ExpectCorrectProbabilities()
+        {
+            var myBitStringDictionary = new Dictionary<string, double>
+            {
+                { "000", 0 },
+                { "001", 1 },
+                { "010", 3 },
+                { "011", 0 },
+                { "100", 4 },
+                { "101", 9 },
+                { "110", 0 },
+                { "111", 32 },
+            };
+            var stat = ConditionalProbabilityAnalyzer.CalculateConditionalProbabilityForString("1", myBitStringDictionary);
+            Assert.NotNull(stat);
+            Assert.Equal(2, stat.ConditionalProbDictionary.Values.Count);
+            Assert.Equal((4d + 9) / (4d + 9 + 32), stat.ConditionalProbDictionary["NextBit=0"]);
+            Assert.Equal((32) / (4d + 9 + 32), stat.ConditionalProbDictionary["NextBit=1"]);
+            Assert.Equal(1, stat.ConditionalProbDictionary["NextBit=0"] + stat.ConditionalProbDictionary["NextBit=1"], 2);
+        }
+
+        [Fact]
+        public void When_CalculateConditionalProbsWithShortString_WithSkewedCountAndSomeZeroes_LongerBitString_ExpectCorrectProbabilities()
+        {
+            var myBitStringDictionary = new Dictionary<string, double>
+            {
+                { "000", 0 },
+                { "001", 7 },
+                { "010", 0 },
+                { "011", 5 },
+                { "100", 0 },
+                { "101", 7 },
+                { "110", 0 },
+                { "111", 5 },
+            };
+            var stat = ConditionalProbabilityAnalyzer.CalculateConditionalProbabilityForString("10", myBitStringDictionary);
+            Assert.NotNull(stat);
+            Assert.Equal(2, stat.ConditionalProbDictionary.Values.Count);
+            Assert.Equal(0 / 7d, stat.ConditionalProbDictionary["NextBit=0"]);
+            Assert.Equal(7 / 7d, stat.ConditionalProbDictionary["NextBit=1"]);
+            Assert.Equal(1, stat.ConditionalProbDictionary["NextBit=0"] + stat.ConditionalProbDictionary["NextBit=1"], 2);
+        }
+
         [Theory]
         [InlineData(0, (0 + 5d) / 15)]
         [InlineData(5, (5 + 5d) / 20)]

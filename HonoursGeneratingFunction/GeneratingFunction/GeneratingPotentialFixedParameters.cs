@@ -79,7 +79,7 @@ namespace HonoursGeneratingFunction.GeneratingFunction
                             counter = GenerateBitStringIter(counter, samples, bitStringCountingDictionary, a, b, c, d);
                             if (counter % 10000 == 0)
                             {
-                                Console.WriteLine($"Iteration {counter}/{totalIterations} {counter / totalIterations * 100}%");
+                                Console.WriteLine($"Iteration {counter}/{totalIterations} {(double)counter / totalIterations * 100}%");
                             }
                         }
                     }
