@@ -23,9 +23,6 @@ namespace HonoursGeneratingFunction.GeneratingFunction
             var jsonContent = File.ReadAllText(countsFilePath);
             var bitStringLookup = JsonSerializer.Deserialize<Dictionary<string, double>>(jsonContent);
             HammingFrequencyAnalysis(bitStringLookup, bitStringLength, savePath);
-            LongestRunAnalysis(bitStringLookup, bitStringLength, savePath);
-            //ConditionalProbabilityAnalyzer.PerformConditionalProbabilityAnalysis(bitStringLookup, savePath);
-            //ConditionalProbabilitySummarizer.SummarizeProbabilities(bitStringLookup, savePath);
             PositionalFrequencyOfOnesToFile(bitStringLookup, savePath);
             StandardAnalysis(bitStringLookup, savePath);
         }
@@ -144,45 +141,6 @@ namespace HonoursGeneratingFunction.GeneratingFunction
 
             var jsonString = JsonSerializer.Serialize(adhocStats);
             File.WriteAllText(Path.Join(savePath, HAMMING_FREQUENCIES_FILE_PATH), jsonString);
-        }
-
-        private static void LongestRunAnalysis(Dictionary<string, double> bitStringLookup, int bitStringLength, string savePath)
-        {
-            var dictionaryLongestRuns = new Dictionary<string, double>();
-            for (var i = 0; i < bitStringLength + 1; i++)
-            {
-                dictionaryLongestRuns[i.ToString()] = 0;
-            }
-            foreach (var keyValue in bitStringLookup)
-            {
-                var bitString = keyValue.Key;
-                var bitStringCount = keyValue.Value;
-                var longestRun = GetLongestRunOfOnes(bitString);
-                dictionaryLongestRuns[longestRun.ToString()] += bitStringCount;
-            }
-            var jsonString = JsonSerializer.Serialize(dictionaryLongestRuns);
-            File.WriteAllText(Path.Join(savePath, RUNS_FILE_PATH), jsonString);
-        }
-
-        private static int GetLongestRunOfOnes(string s)
-        {
-            var longestRun = 0;
-            var currentRun = 0;
-            char? previousChar = null;
-            foreach (var bit in s)
-            {
-                if (!previousChar.HasValue || previousChar == bit)
-                {
-                    currentRun++;
-                    if (currentRun > longestRun)
-                    {
-                        longestRun = currentRun;
-                    }
-                }
-
-                previousChar = bit;
-            }
-            return longestRun;
         }
 
         private static string GetConditionalProbKey(int i, int bit, int nextBit)
